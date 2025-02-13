@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Sample JSON data
+JSON_DATA='{
+  "name": "Alice",
+  "age": 25,
+  "city": "New York",
+  "skills": ["AWS", "Azure", "GCP"],
+  "projects": [
+    {"name": "Project A", "status": "completed"},
+    {"name": "Project B", "status": "ongoing"}
+  ]
+}'
+
+echo "🔹 Original JSON:"
+echo "$JSON_DATA" | jq .
+
+# ✅ 1. Extract a specific value
+echo "🔹 Extract Name:"
+echo "$JSON_DATA" | jq -r '.name'
+
+# ✅ 2. Extract values from an array
+echo "🔹 Extract Skills:"
+echo "$JSON_DATA" | jq -r '.skills[]'
+
+# ✅ 3. Filter projects with status = "ongoing"
+echo "🔹 Ongoing Projects:"
+echo "$JSON_DATA" | jq '.projects[] | select(.status=="ongoing")'
+
+# ✅ 4. Modify JSON (Change city to "San Francisco")
+echo "🔹 Modify City:"
+echo "$JSON_DATA" | jq '.city = "San Francisco"'
+
+# ✅ 5. Add a new key-value pair
+echo "🔹 Add Country Field:"
+echo "$JSON_DATA" | jq '. + {"country": "USA"}'
+
+# ✅ 6. Remove the 'age' field
+echo "🔹 Remove Age Field:"
+echo "$JSON_DATA" | jq 'del(.age)'
+
+# ✅ 7. Merge two JSON objects
+NEW_JSON='{"department": "Engineering", "level": "Senior"}'
+echo "🔹 Merged JSON:"
+jq -n --argjson a "$JSON_DATA" --argjson b "$NEW_JSON" '$a + $b'
+
+# ✅ 8. Loop through projects and extract names
+echo "🔹 Extract Project Names:"
+echo "$JSON_DATA" | jq -r '.projects[].name'
+
+# ✅ 9. Validate JSON (Exit if invalid)
+echo "$JSON_DATA" | jq empty && echo "✅ JSON is valid!" || echo "❌ Invalid JSON!"
+
+exit 0
